@@ -1,0 +1,41 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: csb-cicd-demo
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: customer-gateway
+              uri: https://httpbin.org
+              predicates:
+                - Path=/api/customers/**
+              filters:
+                - SetPath=/anything/customers
+
+            - id: account-gateway
+              uri: https://httpbin.org
+              predicates:
+                - Path=/api/accounts/**
+              filters:
+                - SetPath=/anything/accounts
+
+            - id: savings-gateway
+              uri: https://httpbin.org
+              predicates:
+                - Path=/api/savings/**
+              filters:
+                - SetPath=/anything/savings
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    gateway:
+      access: read-only
